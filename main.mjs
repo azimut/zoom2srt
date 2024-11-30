@@ -31,7 +31,7 @@ function parseChat(chat) {
 function offsetMessages(messages, rawOffset) {
   let result = []
   const offset = toUTCPosix(rawOffset)
-  for(const {startTime, endTime, author, msg} of messages) {
+  for (const { startTime, endTime, author, msg } of messages) {
     result.push({
       startTime: startTime + offset,
       endTime: endTime + offset,
@@ -52,13 +52,12 @@ function formatMessages(messages) {
     result += '\n'
   }
   return result
-}
-
-function toTimestamp(posix) {
-  const date = new Date(posix * 1000) // to milliseconds
-  return `${pad2(date.getUTCHours())}:${pad2(date.getUTCMinutes())}:${pad2(date.getUTCSeconds())}`
-  function pad2(s) {
-    return s.toString().padStart(2, '0')
+  function toTimestamp(posix) {
+    const date = new Date(posix * 1000) // to milliseconds
+    return `${pad2(date.getUTCHours())}:${pad2(date.getUTCMinutes())}:${pad2(date.getUTCSeconds())}`
+    function pad2(s) {
+      return s.toString().padStart(2, '0')
+    }
   }
 }
 
