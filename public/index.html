@@ -11,10 +11,34 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   </head>
   <body>
-    <header>zoom2srt</header>
+    <header>
+      <h1>zoom2srt</h1>
+    </header>
     <main>
-      <form method="" id="" action=""></form>
+      <form method="" id="" action="">
+        <fieldset>
+          <legend>Choose a Zoom chat to upload</legend>
+          <input type="file" name="zoomchat" accept=".txt" />
+        </fieldset>
+      </form>
+      <form method="" id="" action="">
+        <fieldset>
+          <legend>Start time offset</legend>
+          <label for="hours">Hours</label>
+          <input type="number" name="hours" min="0" max="12" value="0" />
+          <label for="minutes">Minutes</label>
+          <input type="number" name="minutes" min="0" max="59" value="0" />
+          <label for="seconds">Seconds</label>
+          <input type="number" name="seconds" min="0" max="59" value="0" />
+        </fieldset>
+      </form>
+      <form method="" id="" action="">
+        <fieldset>
+          <legend>Download your output file</legend>
+          <input type="button" name="" value="download .srt" />
+        </fieldset>
+      </form>
     </main>
-    <footer>All rights reserved</footer>
+    <footer>Copyright © 2024 azimut ― All rights reserved.</footer>
   </body>
 </html>
