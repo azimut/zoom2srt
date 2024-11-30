@@ -8,7 +8,7 @@ const emojiRegex = /^\p{Emoji}$/u; // only an emoji
 const input = readFileSync(TXTFILE, { encoding: 'utf-8' });
 
 function parseChat(chat) {
-  let result = [];
+  let messages = [];
   const lines = chat.split('\r\n').map((s) => s.split('\t'))
   for (const [time, author, msg] of lines) {
     let newMsg = msg;
@@ -18,18 +18,27 @@ function parseChat(chat) {
     if (msg.startsWith("Replying to "))
       newMsg = msg.split('\n')[2];
     if (emojiRegex.test(newMsg)) continue
-    result.push({
+    messages.push({
       startTime: toUTCPosix(time),
       endTime: toUTCPosix(time) + DURATION,
       author: author,
       msg: newMsg
     });
   }
-  return result;
+  return messages;
 }
 
-function offsetMessages(messages, offset) {
+function offsetMessages(messages, rawOffset) {
   let result = []
+  const offset = toUTCPosix(rawOffset)
+  for(const {startTime, endTime, author, msg} of messages) {
+    result.push({
+      startTime: startTime + offset,
+      endTime: endTime + offset,
+      author: author,
+      msg: msg
+    })
+  }
   return result
 }
 
@@ -56,4 +65,4 @@ function toUTCPosix(timestamp) {
   return (parseInt(hour) * 60 * 60 + parseInt(min) * 60 + parseInt(sec))
 }
 
-console.log(printMessages(parseChat(input)))
+console.log(printMessages(offsetMessages(parseChat(input), STARTOFFSET)))
