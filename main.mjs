@@ -42,14 +42,16 @@ function offsetMessages(messages, rawOffset) {
   return result
 }
 
-function printMessages(messages) {
+function formatMessages(messages) {
   let idx = 0
+  let result = ""
   for (const { startTime, endTime, author, msg } of messages) {
-    console.log(++idx)
-    console.log(`${toTimestamp(startTime)} --> ${toTimestamp(endTime)}`)
-    console.log(author, msg)
-    console.log()
+    result += `${++idx}\n`
+    result += `${toTimestamp(startTime)} --> ${toTimestamp(endTime)}\n`
+    result += `${author} ${msg}\n`
+    result += '\n'
   }
+  return result
 }
 
 function toTimestamp(posix) {
@@ -65,4 +67,4 @@ function toUTCPosix(timestamp) {
   return (parseInt(hour) * 60 * 60 + parseInt(min) * 60 + parseInt(sec))
 }
 
-console.log(printMessages(offsetMessages(parseChat(input), STARTOFFSET)))
+console.log(formatMessages(offsetMessages(parseChat(input), STARTOFFSET)))
