@@ -48,13 +48,15 @@
         document.body.removeChild(downloadAnchor);
       }
       function loadChat() {
-        const [chatfile] = document.getElementById("chatfile").files;
+        const chatfileEle = document.getElementById("chatfile");
+        const [chatfile] = chatfileEle.files;
         const reader = new FileReader();
         reader.addEventListener(
           "load",
           () => {
             rawChat = reader.result;
             updatePreview();
+            chatfileEle.value = null;
           },
           false,
         );
