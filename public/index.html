@@ -71,68 +71,72 @@
       <h1>zoom2srt</h1>
     </header>
     <main>
-      <fieldset>
-        <legend>Choose a Zoom chat to upload</legend>
-        <input
-          type="file"
-          id="chatfile"
-          name="chatfile"
-          accept=".txt"
-          onchange="loadChat()"
-        />
-      </fieldset>
+      <div id="upload">
+        <fieldset>
+          <legend>Choose a Zoom chat to upload</legend>
+          <input
+            type="file"
+            id="chatfile"
+            name="chatfile"
+            accept=".txt"
+            onchange="loadChat()"
+          />
+        </fieldset>
+      </div>
       <div id="platform"></div>
-      <fieldset>
-        <legend>Nickname style</legend>
-        <input type="radio" name="style" id="none" value="none" checked />
-        <label for="colors">none</label>
-        <input type="radio" name="style" id="colors" value="colors" />
-        <label for="colors">colorized</label>
-        <input type="radio" name="style" id="bold" value="bold" />
-        <label for="colors">bold</label>
-      </fieldset>
-      <fieldset>
-        <legend>Chat message duration (in seconds)</legend>
-        <input
-          type="number"
-          name="duration"
-          id="duration"
-          min="1"
-          max="99"
-          value="5"
-        />
-      </fieldset>
-      <fieldset>
-        <legend>Start time offset</legend>
-        <label for="hours">Hours</label>
-        <input
-          type="number"
-          name="hours"
-          id="hours"
-          min="0"
-          max="12"
-          value="0"
-        />
-        <label for="minutes">Minutes</label>
-        <input
-          type="number"
-          name="minutes"
-          id="minutes"
-          min="0"
-          max="59"
-          value="0"
-        />
-        <label for="seconds">Seconds</label>
-        <input
-          type="number"
-          name="seconds"
-          id="seconds"
-          min="0"
-          max="59"
-          value="0"
-        />
-      </fieldset>
-      <button id="download" onclick="clickDownload()">Download!</button>
+      <div id="settings">
+        <fieldset>
+          <legend>Nickname style</legend>
+          <input type="radio" name="style" id="none" value="none" checked />
+          <label for="colors">none</label>
+          <input type="radio" name="style" id="colors" value="colors" />
+          <label for="colors">colorized</label>
+          <input type="radio" name="style" id="bold" value="bold" />
+          <label for="colors">bold</label>
+        </fieldset>
+        <fieldset>
+          <legend>Chat message duration (in seconds)</legend>
+          <input
+            type="number"
+            name="duration"
+            id="duration"
+            min="1"
+            max="99"
+            value="5"
+          />
+        </fieldset>
+        <fieldset>
+          <legend>Start time offset</legend>
+          <label for="hours">Hours</label>
+          <input
+            type="number"
+            name="hours"
+            id="hours"
+            min="0"
+            max="12"
+            value="0"
+          />
+          <label for="minutes">Minutes</label>
+          <input
+            type="number"
+            name="minutes"
+            id="minutes"
+            min="0"
+            max="59"
+            value="0"
+          />
+          <label for="seconds">Seconds</label>
+          <input
+            type="number"
+            name="seconds"
+            id="seconds"
+            min="0"
+            max="59"
+            value="0"
+          />
+        </fieldset>
+        <button id="download" onclick="clickDownload()">Download!</button>
+      </div>
     </main>
     <footer>Copyright © 2024 azimut ― All rights reserved.</footer>
   </body>
