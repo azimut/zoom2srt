@@ -1,12 +1,11 @@
-const DURATION = 5 // in seconds
 const STARTOFFSET = '00:00:00';
 const emojiRegex = /^\p{Emoji}$/u; // only an emoji
 
-function processChat(chat) {
-  return format(offset(parse(chat), STARTOFFSET));
+function processChat(chat, duration) {
+  return format(offset(parse(chat, parseInt(duration)), STARTOFFSET));
 }
 
-function parse(chat) {
+function parse(chat, duration) {
   let messages = [];
   const lines = chat.split('\r\n').map((s) => s.split('\t'))
   for (const [time, author, msg] of lines) {
@@ -19,7 +18,7 @@ function parse(chat) {
     if (emojiRegex.test(newMsg)) continue
     messages.push({
       startTime: toUTCPosix(time),
-      endTime: toUTCPosix(time) + DURATION,
+      endTime: toUTCPosix(time) + duration,
       author: author,
       msg: newMsg
     });

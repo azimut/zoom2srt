@@ -11,26 +11,41 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <script type="text/javascript" src="script.js"></script>
     <script type="text/javascript">
-      function updateSub(content) {
+      let rawChat = "";
+      function updatePreview() {
         const containerDiv = document.getElementById("platform");
-        const downloadAnchor = document.getElementById("download");
+        const finalSubs = processChat(rawChat, duration);
+        containerDiv.innerText = previewSub(finalSubs);
+        function previewSub(sub) {
+          return sub.split("\n\n").slice(0, 2).join("\n\n");
+        }
+      }
+      function clickDownload() {
         const duration = document.getElementById("duration").value;
-        const subContent = processChat(content, duration);
-        containerDiv.innerText = subSnippet(subContent);
+        const downloadAnchor = document.createElement("a");
         downloadAnchor.setAttribute("download", "subtitle.srt"); // TODO: get a proper filename
         downloadAnchor.setAttribute(
           "href",
-          "data:text/plain;charset=utf-8," + encodeURIComponent(subContent),
+          "data:text/plain;charset=utf-8," +
+            encodeURIComponent(processChat(rawChat, duration)),
         );
+        downloadAnchor.style.display = "none";
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        document.body.removeChild(downloadAnchor);
       }
-      function previewFile() {
+      function loadChat() {
         const [chatfile] = document.getElementById("chatfile").files;
         const reader = new FileReader();
-        reader.addEventListener("load", () => updateSub(reader.result), false);
+        reader.addEventListener(
+          "load",
+          () => {
+            rawChat = reader.result;
+            updatePreview();
+          },
+          false,
+        );
         if (chatfile) reader.readAsText(chatfile);
-      }
-      function subSnippet(sub) {
-        return sub.split("\n\n").slice(0, 2).join("\n\n");
       }
     </script>
   </head>
@@ -46,42 +61,40 @@
           id="chatfile"
           name="chatfile"
           accept=".txt"
-          onchange="previewFile()"
+          onchange="loadChat()"
         />
       </fieldset>
       <div id="platform"></div>
-      <form method="" id="" action="">
-        <fieldset>
-          <legend>Nickname style</legend>
-          <input type="radio" name="style" id="none" value="none" checked />
-          <label for="colors">none</label>
-          <input type="radio" name="style" id="colors" value="colors" />
-          <label for="colors">colorized</label>
-          <input type="radio" name="style" id="bold" value="bold" />
-          <label for="colors">bold</label>
-        </fieldset>
-        <fieldset>
-          <legend>Chat message duration (in seconds)</legend>
-          <input
-            type="number"
-            name="duration"
-            id="duration"
-            min="1"
-            max="99"
-            value="5"
-          />
-        </fieldset>
-        <fieldset>
-          <legend>Start time offset</legend>
-          <label for="hours">Hours</label>
-          <input type="number" name="hours" min="0" max="12" value="0" />
-          <label for="minutes">Minutes</label>
-          <input type="number" name="minutes" min="0" max="59" value="0" />
-          <label for="seconds">Seconds</label>
-          <input type="number" name="seconds" min="0" max="59" value="0" />
-        </fieldset>
-        <a href="#" id="download">download .srt</a>
-      </form>
+      <fieldset>
+        <legend>Nickname style</legend>
+        <input type="radio" name="style" id="none" value="none" checked />
+        <label for="colors">none</label>
+        <input type="radio" name="style" id="colors" value="colors" />
+        <label for="colors">colorized</label>
+        <input type="radio" name="style" id="bold" value="bold" />
+        <label for="colors">bold</label>
+      </fieldset>
+      <fieldset>
+        <legend>Chat message duration (in seconds)</legend>
+        <input
+          type="number"
+          name="duration"
+          id="duration"
+          min="1"
+          max="99"
+          value="5"
+        />
+      </fieldset>
+      <fieldset>
+        <legend>Start time offset</legend>
+        <label for="hours">Hours</label>
+        <input type="number" name="hours" min="0" max="12" value="0" />
+        <label for="minutes">Minutes</label>
+        <input type="number" name="minutes" min="0" max="59" value="0" />
+        <label for="seconds">Seconds</label>
+        <input type="number" name="seconds" min="0" max="59" value="0" />
+      </fieldset>
+      <button id="download" onclick="clickDownload()">Download!</button>
     </main>
     <footer>Copyright © 2024 azimut ― All rights reserved.</footer>
   </body>
