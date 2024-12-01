@@ -9,19 +9,56 @@
     <link rel="stylesheet" href="style.css" type="text/css" media="screen" />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript">
+      // https://developer.mozilla.org/en-US/docs/Web/API/FileReader
+      // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText
+      function previewFile() {
+        const container = document.getElementById("platform");
+        const chatfileEle = document.getElementById("chatfile");
+        const [chatfile] = chatfileEle.files;
+        const reader = new FileReader();
+        reader.addEventListener(
+          "load",
+          () => {
+            container.innerText = subSnippet(processChat(reader.result));
+            chatfileEle.value = null; // help forget
+          },
+          false,
+        );
+        if (chatfile) reader.readAsText(chatfile);
+      }
+      function subSnippet(sub) {
+        return sub.split("\n\n").slice(0, 2).join("\n\n");
+      }
+    </script>
   </head>
   <body>
     <header>
       <h1>zoom2srt</h1>
     </header>
     <main>
+      <fieldset>
+        <legend>Choose a Zoom chat to upload</legend>
+        <input
+          type="file"
+          id="chatfile"
+          name="chatfile"
+          accept=".txt"
+          onchange="previewFile()"
+        />
+      </fieldset>
+      <div id="platform"></div>
       <form method="" id="" action="">
         <fieldset>
-          <legend>Choose a Zoom chat to upload</legend>
-          <input type="file" name="zoomchat" accept=".txt" />
+          <legend>Nickname style</legend>
+          <input type="radio" name="style" id="none" value="none" checked />
+          <label for="colors">none</label>
+          <input type="radio" name="style" id="colors" value="colors" />
+          <label for="colors">colorized</label>
+          <input type="radio" name="style" id="bold" value="bold" />
+          <label for="colors">bold</label>
         </fieldset>
-      </form>
-      <form method="" id="" action="">
         <fieldset>
           <legend>Start time offset</legend>
           <label for="hours">Hours</label>
@@ -31,12 +68,7 @@
           <label for="seconds">Seconds</label>
           <input type="number" name="seconds" min="0" max="59" value="0" />
         </fieldset>
-      </form>
-      <form method="" id="" action="">
-        <fieldset>
-          <legend>Download your output file</legend>
-          <input type="button" name="" value="download .srt" />
-        </fieldset>
+        <input type="button" name="" value="Download" />
       </form>
     </main>
     <footer>Copyright © 2024 azimut ― All rights reserved.</footer>
