@@ -13,6 +13,7 @@ body {
   header {
     h1 {
       text-align: center;
+      margin: 0.8em 0 0 0;
     }
   }
   main {
