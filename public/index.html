@@ -11,26 +11,22 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <script type="text/javascript" src="script.js"></script>
     <script type="text/javascript">
-      // https://developer.mozilla.org/en-US/docs/Web/API/FileReader
-      // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText
-      function previewFile() {
+      function updateSub(content) {
         const containerDiv = document.getElementById("platform");
         const downloadAnchor = document.getElementById("download");
+        const duration = document.getElementById("duration").value;
+        const subContent = processChat(content, duration);
+        containerDiv.innerText = subSnippet(subContent);
+        downloadAnchor.setAttribute("download", "subtitle.srt"); // TODO: get a proper filename
+        downloadAnchor.setAttribute(
+          "href",
+          "data:text/plain;charset=utf-8," + encodeURIComponent(subContent),
+        );
+      }
+      function previewFile() {
         const [chatfile] = document.getElementById("chatfile").files;
         const reader = new FileReader();
-        reader.addEventListener(
-          "load",
-          () => {
-            const subContent = processChat(reader.result);
-            containerDiv.innerText = subSnippet(subContent);
-            downloadAnchor.setAttribute("download", "subtitle.srt"); // TODO: get a proper filename
-            downloadAnchor.setAttribute(
-              "href",
-              "data:text/plain;charset=utf-8," + encodeURIComponent(subContent),
-            );
-          },
-          false,
-        );
+        reader.addEventListener("load", () => updateSub(reader.result), false);
         if (chatfile) reader.readAsText(chatfile);
       }
       function subSnippet(sub) {
@@ -63,6 +59,17 @@
           <label for="colors">colorized</label>
           <input type="radio" name="style" id="bold" value="bold" />
           <label for="colors">bold</label>
+        </fieldset>
+        <fieldset>
+          <legend>Chat message duration (in seconds)</legend>
+          <input
+            type="number"
+            name="duration"
+            id="duration"
+            min="1"
+            max="99"
+            value="5"
+          />
         </fieldset>
         <fieldset>
           <legend>Start time offset</legend>
