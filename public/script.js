@@ -13,15 +13,17 @@ function parseIt(chat, duration) {
   const emojiRegex = /^\p{Emoji}$/u; // only an emoji
   for (const [time, author, msg] of lines) {
     let newMsg = msg;
+    let startTime = 0;
     if (!time || !author || !msg) continue
     if (msg.startsWith("Reacted to ")) continue
     if (msg.startsWith("Se ha reaccionado a ")) continue
     if (msg.startsWith("Replying to "))
       newMsg = msg.split('\n')[2];
     if (emojiRegex.test(newMsg)) continue
+    startTime = inSeconds(time);
     messages.push({
-      startTime: toUTCPosix(time),
-      endTime: toUTCPosix(time) + duration,
+      startTime: startTime,
+      endTime: startTime + duration,
       author: author,
       msg: newMsg
     });
@@ -31,11 +33,14 @@ function parseIt(chat, duration) {
 
 function offsetIt(messages, rawOffset) {
   let result = []
-  const offset = toUTCPosix(rawOffset)
+  const offset = inSeconds(rawOffset)
   for (const { startTime, endTime, author, msg } of messages) {
+    let finalStartTime = startTime - offset;
+    if (finalStartTime < 0)
+      continue
     result.push({
-      startTime: startTime + offset,
-      endTime: endTime + offset,
+      startTime: finalStartTime,
+      endTime: endTime - offset,
       author: author,
       msg: msg
     })
@@ -74,7 +79,7 @@ function formatIt(messages, nickStyle) {
   }
 }
 
-function toUTCPosix(timestamp) {
+function inSeconds(timestamp) {
   const [hour, min, sec] = timestamp.split(':')
   return (parseInt(hour) * 60 * 60 + parseInt(min) * 60 + parseInt(sec))
 }

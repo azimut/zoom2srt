@@ -13,9 +13,7 @@
     <script type="text/javascript">
       let rawChat = "";
       function gatherOpts() {
-        function pad2(s) {
-          return s.toString().padStart(2, "0");
-        }
+        const pad2 = (s) => s.toString().padStart(2, "0");
         const duration = document.getElementById("duration").value;
         const nickStyle = document.querySelector(
           'input[name="style"]:checked',
@@ -30,9 +28,7 @@
         };
       }
       function updatePreview() {
-        function previewSub(sub) {
-          return sub.split("\n\n").slice(0, 2).join("\n\n");
-        }
+        const previewSub = (sub) => sub.split("\n\n").slice(0, 2).join("\n\n");
         document.getElementById("settings").style.display = null;
         document.getElementById("upload").style.display = "none";
         const containerDiv = document.getElementById("platform");
@@ -40,7 +36,6 @@
         /* containerDiv.innerText = previewSub(finalSubs); */
       }
       function clickDownload() {
-        gatherOpts();
         const downloadAnchor = document.createElement("a");
         downloadAnchor.setAttribute("download", "subtitle.srt"); // TODO: get a proper filename
         downloadAnchor.setAttribute(
