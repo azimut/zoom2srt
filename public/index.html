@@ -14,15 +14,20 @@
       // https://developer.mozilla.org/en-US/docs/Web/API/FileReader
       // https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText
       function previewFile() {
-        const container = document.getElementById("platform");
-        const chatfileEle = document.getElementById("chatfile");
-        const [chatfile] = chatfileEle.files;
+        const containerDiv = document.getElementById("platform");
+        const downloadAnchor = document.getElementById("download");
+        const [chatfile] = document.getElementById("chatfile").files;
         const reader = new FileReader();
         reader.addEventListener(
           "load",
           () => {
-            container.innerText = subSnippet(processChat(reader.result));
-            chatfileEle.value = null; // help forget
+            const subContent = processChat(reader.result);
+            containerDiv.innerText = subSnippet(subContent);
+            downloadAnchor.setAttribute("download", "subtitle.srt"); // TODO: get a proper filename
+            downloadAnchor.setAttribute(
+              "href",
+              "data:text/plain;charset=utf-8," + encodeURIComponent(subContent),
+            );
           },
           false,
         );
@@ -68,7 +73,7 @@
           <label for="seconds">Seconds</label>
           <input type="number" name="seconds" min="0" max="59" value="0" />
         </fieldset>
-        <input type="button" name="" value="Download" />
+        <a href="#" id="download">download .srt</a>
       </form>
     </main>
     <footer>Copyright © 2024 azimut ― All rights reserved.</footer>
