@@ -1,7 +1,4 @@
-const emojiRegex = /^\p{Emoji}$/u; // only an emoji
-
 function processChat(chat, { duration, offset, nickStyle }) {
-  console.log(duration, offset);
   return (
     formatIt(
       offsetIt(
@@ -13,6 +10,7 @@ function processChat(chat, { duration, offset, nickStyle }) {
 function parseIt(chat, duration) {
   let messages = [];
   const lines = chat.split('\r\n').map((s) => s.split('\t'))
+  const emojiRegex = /^\p{Emoji}$/u; // only an emoji
   for (const [time, author, msg] of lines) {
     let newMsg = msg;
     if (!time || !author || !msg) continue
@@ -46,6 +44,13 @@ function offsetIt(messages, rawOffset) {
 }
 
 function formatIt(messages, nickStyle) {
+  let iColor = 0
+  let colorMap = new Map()
+  const colors = ["violet", "indigo", "blue", "green", "yellow", "orange", "red"]
+  const getColor = (nick) => {
+    if (!colorMap.get(nick)) colorMap.set(nick, colors[iColor++ % colors.length])
+    return colorMap.get(nick)
+  }
   let idx = 0
   let result = ""
   for (const { startTime, endTime, author, msg } of messages) {
@@ -53,6 +58,8 @@ function formatIt(messages, nickStyle) {
     result += `${toTimestamp(startTime)},000 --> ${toTimestamp(endTime)},000\n`
     if (nickStyle === "bold")
       result += `<b>${author}</b> ${msg}\n`
+    else if (nickStyle === "colors")
+      result += `<font color=${getColor(author)}>${author}</font> ${msg}\n`
     else
       result += `${author} ${msg}\n`
     result += '\n'

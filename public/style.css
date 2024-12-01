@@ -1,5 +1,4 @@
 :root {
-  background: green;
 }
 
 body {
@@ -7,7 +6,6 @@ body {
   max-width: 1024px;
   padding: 0 2em;
   margin: 0 auto;
-  background: grey;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -17,23 +15,25 @@ body {
     }
   }
   main {
-    label[for="colors"]:nth-of-type(2) {
-      background-image: linear-gradient(
-        to left,
-        violet,
-        indigo,
-        blue,
-        green,
-        yellow,
-        orange,
-        red
-      );
-      background-clip: text;
-      -webkit-background-clip: text;
-      color: transparent;
-    }
-    label[for="colors"]:nth-of-type(3) {
-      font-weight: bold;
+    div#settings {
+      label[for="colors"]:nth-of-type(2) {
+        background-image: linear-gradient(
+          to left,
+          violet,
+          indigo,
+          blue,
+          green,
+          yellow,
+          orange,
+          red
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+      }
+      label[for="colors"]:nth-of-type(3) {
+        font-weight: bold;
+      }
     }
   }
   footer {

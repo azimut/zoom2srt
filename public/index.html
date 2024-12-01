@@ -33,9 +33,11 @@
         function previewSub(sub) {
           return sub.split("\n\n").slice(0, 2).join("\n\n");
         }
+        document.getElementById("settings").style.display = null;
+        document.getElementById("upload").style.display = "none";
         const containerDiv = document.getElementById("platform");
         const finalSubs = processChat(rawChat, gatherOpts());
-        containerDiv.innerText = previewSub(finalSubs);
+        /* containerDiv.innerText = previewSub(finalSubs); */
       }
       function clickDownload() {
         gatherOpts();
@@ -73,7 +75,7 @@
     <main>
       <div id="upload">
         <fieldset>
-          <legend>Choose a Zoom chat to upload</legend>
+          <legend>Select a Zoom .txt chat to upload</legend>
           <input
             type="file"
             id="chatfile"
@@ -103,6 +105,7 @@
             min="1"
             max="99"
             value="5"
+            required
           />
         </fieldset>
         <fieldset>
