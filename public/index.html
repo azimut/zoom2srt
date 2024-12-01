@@ -18,13 +18,12 @@
         const nickStyle = document.querySelector(
           'input[name="style"]:checked',
         ).value;
-        const hours = pad2(document.getElementById("hours").value);
         const minutes = pad2(document.getElementById("minutes").value);
         const seconds = pad2(document.getElementById("seconds").value);
         return {
           duration: parseInt(duration),
           nickStyle: nickStyle,
-          offset: `${hours}:${minutes}:${seconds}`,
+          offset: `00:${minutes}:${seconds}`,
         };
       }
       function updatePreview() {
@@ -70,7 +69,7 @@
     <main>
       <div id="upload">
         <fieldset>
-          <legend>Select a Zoom .txt chat to upload</legend>
+          <legend>Select a Zoom .txt chat file to upload</legend>
           <input
             type="file"
             id="chatfile"
@@ -83,16 +82,22 @@
       <div id="platform"></div>
       <div id="settings">
         <fieldset>
-          <legend>Nickname style</legend>
+          <legend title="Style to apply to message nicknames">
+            Nick style
+          </legend>
           <input type="radio" name="style" id="none" value="none" checked />
           <label for="colors">none</label>
           <input type="radio" name="style" id="colors" value="colors" />
-          <label for="colors">colorized</label>
+          <label for="colors" title="A different color for each nick"
+            >colorized</label
+          >
           <input type="radio" name="style" id="bold" value="bold" />
           <label for="colors">bold</label>
         </fieldset>
         <fieldset>
-          <legend>Chat message duration (in seconds)</legend>
+          <legend title="How long each chat message stays on-screen">
+            Message duration
+          </legend>
           <input
             type="number"
             name="duration"
@@ -102,19 +107,14 @@
             value="5"
             required
           />
+          <label for="duration">seconds </label>
         </fieldset>
         <fieldset>
-          <legend>Start time offset</legend>
-          <label for="hours">Hours</label>
-          <input
-            type="number"
-            name="hours"
-            id="hours"
-            min="0"
-            max="12"
-            value="0"
-          />
-          <label for="minutes">Minutes</label>
+          <legend
+            title="For when some of the beginning of the video has been cut out"
+          >
+            Start time offset
+          </legend>
           <input
             type="number"
             name="minutes"
@@ -123,7 +123,7 @@
             max="59"
             value="0"
           />
-          <label for="seconds">Seconds</label>
+          <label for="minutes">minutes</label>
           <input
             type="number"
             name="seconds"
@@ -132,6 +132,7 @@
             max="59"
             value="0"
           />
+          <label for="seconds">seconds</label>
         </fieldset>
         <button id="download" onclick="clickDownload()">Download!</button>
       </div>
