@@ -1,11 +1,16 @@
-const STARTOFFSET = '00:00:00';
 const emojiRegex = /^\p{Emoji}$/u; // only an emoji
 
-function processChat(chat, duration) {
-  return format(offset(parse(chat, parseInt(duration)), STARTOFFSET));
+function processChat(chat, { duration, offset, nickStyle }) {
+  console.log(duration, offset);
+  return (
+    formatIt(
+      offsetIt(
+        parseIt(chat, duration),
+        offset),
+      nickStyle));
 }
 
-function parse(chat, duration) {
+function parseIt(chat, duration) {
   let messages = [];
   const lines = chat.split('\r\n').map((s) => s.split('\t'))
   for (const [time, author, msg] of lines) {
@@ -26,7 +31,7 @@ function parse(chat, duration) {
   return messages;
 }
 
-function offset(messages, rawOffset) {
+function offsetIt(messages, rawOffset) {
   let result = []
   const offset = toUTCPosix(rawOffset)
   for (const { startTime, endTime, author, msg } of messages) {
@@ -40,13 +45,16 @@ function offset(messages, rawOffset) {
   return result
 }
 
-function format(messages) {
+function formatIt(messages, nickStyle) {
   let idx = 0
   let result = ""
   for (const { startTime, endTime, author, msg } of messages) {
     result += `${++idx}\n`
-    result += `${toTimestamp(startTime)} --> ${toTimestamp(endTime)}\n`
-    result += `${author} ${msg}\n`
+    result += `${toTimestamp(startTime)},000 --> ${toTimestamp(endTime)},000\n`
+    if (nickStyle === "bold")
+      result += `<b>${author}</b> ${msg}\n`
+    else
+      result += `${author} ${msg}\n`
     result += '\n'
   }
   return result
