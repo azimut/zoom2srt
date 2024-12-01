@@ -12,22 +12,39 @@
     <script type="text/javascript" src="script.js"></script>
     <script type="text/javascript">
       let rawChat = "";
+      function gatherOpts() {
+        function pad2(s) {
+          return s.toString().padStart(2, "0");
+        }
+        const duration = document.getElementById("duration").value;
+        const nickStyle = document.querySelector(
+          'input[name="style"]:checked',
+        ).value;
+        const hours = pad2(document.getElementById("hours").value);
+        const minutes = pad2(document.getElementById("minutes").value);
+        const seconds = pad2(document.getElementById("seconds").value);
+        return {
+          duration: parseInt(duration),
+          nickStyle: nickStyle,
+          offset: `${hours}:${minutes}:${seconds}`,
+        };
+      }
       function updatePreview() {
-        const containerDiv = document.getElementById("platform");
-        const finalSubs = processChat(rawChat, duration);
-        containerDiv.innerText = previewSub(finalSubs);
         function previewSub(sub) {
           return sub.split("\n\n").slice(0, 2).join("\n\n");
         }
+        const containerDiv = document.getElementById("platform");
+        const finalSubs = processChat(rawChat, gatherOpts());
+        containerDiv.innerText = previewSub(finalSubs);
       }
       function clickDownload() {
-        const duration = document.getElementById("duration").value;
+        gatherOpts();
         const downloadAnchor = document.createElement("a");
         downloadAnchor.setAttribute("download", "subtitle.srt"); // TODO: get a proper filename
         downloadAnchor.setAttribute(
           "href",
           "data:text/plain;charset=utf-8," +
-            encodeURIComponent(processChat(rawChat, duration)),
+            encodeURIComponent(processChat(rawChat, gatherOpts())),
         );
         downloadAnchor.style.display = "none";
         document.body.appendChild(downloadAnchor);
@@ -88,11 +105,32 @@
       <fieldset>
         <legend>Start time offset</legend>
         <label for="hours">Hours</label>
-        <input type="number" name="hours" min="0" max="12" value="0" />
+        <input
+          type="number"
+          name="hours"
+          id="hours"
+          min="0"
+          max="12"
+          value="0"
+        />
         <label for="minutes">Minutes</label>
-        <input type="number" name="minutes" min="0" max="59" value="0" />
+        <input
+          type="number"
+          name="minutes"
+          id="minutes"
+          min="0"
+          max="59"
+          value="0"
+        />
         <label for="seconds">Seconds</label>
-        <input type="number" name="seconds" min="0" max="59" value="0" />
+        <input
+          type="number"
+          name="seconds"
+          id="seconds"
+          min="0"
+          max="59"
+          value="0"
+        />
       </fieldset>
       <button id="download" onclick="clickDownload()">Download!</button>
     </main>
