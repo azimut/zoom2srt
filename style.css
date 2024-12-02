@@ -47,7 +47,6 @@ body {
           red
         );
         background-clip: text;
-        -webkit-background-clip: text;
         color: transparent;
       }
       label[for="colors"]:nth-of-type(3) {
