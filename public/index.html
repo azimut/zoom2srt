@@ -114,7 +114,7 @@
       </div>
       <div id="platform"></div>
       <div id="settings" style="display: none">
-        <fieldset>
+        <fieldset class="styles">
           <legend title="Style to apply to message nicknames">
             Nick style
           </legend>
@@ -127,7 +127,7 @@
           <input type="radio" name="style" id="bold" value="bold" />
           <label for="colors">bold</label>
         </fieldset>
-        <fieldset>
+        <fieldset class="duration">
           <legend title="How long each chat message stays on-screen">
             Message duration
           </legend>
@@ -142,7 +142,7 @@
           />
           <label for="duration">seconds </label>
         </fieldset>
-        <fieldset>
+        <fieldset class="offset">
           <legend
             title="For when some of the beginning of the video has been cut out"
           >
@@ -167,7 +167,9 @@
           />
           <label for="seconds">seconds</label>
         </fieldset>
-        <button id="download" onclick="clickDownload()">Download!</button>
+        <div class="download">
+          <button onclick="clickDownload()">Download!</button>
+        </div>
       </div>
     </main>
     <footer>Copyright © 2024 azimut ― All rights reserved.</footer>
