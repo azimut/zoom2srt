@@ -10,27 +10,30 @@
     <script type="text/javascript" src="script.js"></script>
     <script type="text/javascript">
       let rawChat = "";
+      let rawMessages = [];
+      function nickStyle() {
+        return document.querySelector('input[name="style"]:checked').value;
+      }
       function gatherOpts() {
         const pad2 = (s) => s.toString().padStart(2, "0");
         const duration = document.getElementById("duration").value;
-        const nickStyle = document.querySelector(
-          'input[name="style"]:checked'
-        ).value;
         const minutes = pad2(document.getElementById("minutes").value);
         const seconds = pad2(document.getElementById("seconds").value);
         return {
           duration: parseInt(duration),
-          nickStyle: nickStyle,
+          nickStyle: nickStyle(),
           offset: `00:${minutes}:${seconds}`,
         };
       }
+      function updateMessages() {
+        let { offset, duration } = gatherOpts();
+        rawMessages = offsetIt(parseIt(rawChat, duration), offset);
+      }
       function updatePreview() {
         const previewSub = (sub) => sub.split("\n\n").slice(0, 2).join("\n\n");
-        document.getElementById("settings").style.display = null;
-        document.getElementById("upload").style.display = "none";
         const containerDiv = document.getElementById("platform");
         const finalSubs = processChat(rawChat, gatherOpts());
-        /* containerDiv.innerText = previewSub(finalSubs); */
+        containerDiv.innerText = previewSub(finalSubs);
       }
       function clickDownload() {
         const downloadAnchor = document.createElement("a");
@@ -38,7 +41,7 @@
         downloadAnchor.setAttribute(
           "href",
           "data:text/plain;charset=utf-8," +
-            encodeURIComponent(processChat(rawChat, gatherOpts()))
+            encodeURIComponent(formatIt(rawMessages, nickStyle()))
         );
         downloadAnchor.style.display = "none";
         document.body.appendChild(downloadAnchor);
@@ -46,6 +49,10 @@
         document.body.removeChild(downloadAnchor);
       }
       function loadChat() {
+        function showSettings() {
+          document.getElementById("settings").style.display = null;
+          document.getElementById("upload").style.display = "none";
+        }
         const chatfileEle = document.getElementById("chatfile");
         const [chatfile] = chatfileEle.files;
         const reader = new FileReader();
@@ -53,8 +60,10 @@
           "load",
           () => {
             rawChat = reader.result;
-            updatePreview();
-            chatfileEle.value = null;
+            showSettings();
+            updateMessages();
+            /* updatePreview(); */
+            chatfileEle.value = null; // forget about filename
           },
           false
         );
@@ -132,6 +141,7 @@
             Message duration
           </legend>
           <input
+            onchange="updateMessages()"
             type="number"
             name="duration"
             id="duration"
@@ -155,6 +165,7 @@
             min="0"
             max="59"
             value="0"
+            onchange="updateMessages()"
           />
           <label for="minutes">minutes</label>
           <input
@@ -164,6 +175,7 @@
             min="0"
             max="59"
             value="0"
+            onchange="updateMessages()"
           />
           <label for="seconds">seconds</label>
         </fieldset>
