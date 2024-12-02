@@ -1,3 +1,7 @@
+const DEFAULT_DURATION = 5;
+const DEFAULT_NICKSTYLE = "none";
+const DEFAULT_OFFSET = "00:00:00";
+
 function processChat(chat, opts) {
   const { duration, offset, nickStyle } = opts;
   return (
@@ -9,7 +13,7 @@ function processChat(chat, opts) {
       nickStyle));
 }
 
-function parseIt(chat, duration) {
+function parseIt(chat, duration = DEFAULT_DURATION) {
   let messages = [];
   const lines = chat.split('\r\n').map((s) => s.split('\t'))
   const emojiRegex = /^\p{Emoji}$/u; // only an emoji
@@ -33,7 +37,7 @@ function parseIt(chat, duration) {
   return messages;
 }
 
-function offsetIt(messages, rawOffset) {
+function offsetIt(messages, rawOffset = DEFAULT_OFFSET) {
   let result = []
   const offset = inSeconds(rawOffset)
   for (const { startTime, endTime, author, msg } of messages) {
@@ -50,7 +54,7 @@ function offsetIt(messages, rawOffset) {
   return result
 }
 
-function formatIt(messages, nickStyle) {
+function formatIt(messages, nickStyle = DEFAULT_NICKSTYLE) {
   let iColor = 0
   let colorMap = new Map()
   const colors = ['#e6194B', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#911eb4', '#42d4f4', '#f032e6', '#bfef45', '#fabed4', '#469990', '#dcbeff', '#9A6324', '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1', '#000075', '#a9a9a9', '#ffffff', '#000000'];
