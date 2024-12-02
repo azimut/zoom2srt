@@ -23,6 +23,9 @@ body {
       font-size: 1em;
       font-family: monospace;
     }
+    div#upload {
+      margin-bottom: 4.5em; /* hacky! */
+    }
     div#settings {
       display: flex;
       flex-direction: column;
