@@ -3,8 +3,8 @@ const DEFAULT_NICKSTYLE = "none";
 const DEFAULT_OFFSET = "00:00:00";
 
 function processChat(chat, opts) {
-  const { duration, offset, nickStyle } = opts;
-  return formatIt(offsetIt(parseIt(chat, duration), offset), nickStyle);
+  const { duration, offsets, nickStyle } = opts;
+  return formatIt(offsetIt(parseIt(chat, duration), offsets), nickStyle);
 }
 
 function parseIt(chat, duration = DEFAULT_DURATION) {
@@ -29,15 +29,25 @@ function parseIt(chat, duration = DEFAULT_DURATION) {
   return messages;
 }
 
-function offsetIt(messages, rawOffset = DEFAULT_OFFSET) {
+function offsetIt(messages, offsets = []) {
+  let newMessages = messages;
+  for (const { offset, index } of offsets) {
+    newMessages = offsetOnce(newMessages, offset, index);
+  }
+  return newMessages;
+}
+
+function offsetOnce(messages, rawOffset, bottomIdx) {
   let result = [];
+  let idx = 0;
   const offset = inSeconds(rawOffset);
   for (const { startTime, endTime, author, msg } of messages) {
-    let finalStartTime = startTime - offset;
+    let effectiveOffset = bottomIdx > idx++ ? 0 : offset; // offset ONLY requested ones
+    let finalStartTime = startTime - effectiveOffset;
     if (finalStartTime < 0) continue;
     result.push({
       startTime: finalStartTime,
-      endTime: endTime - offset,
+      endTime: endTime - effectiveOffset,
       author: author,
       msg: msg,
     });
@@ -95,12 +105,13 @@ function formatIt(messages, nickStyle = DEFAULT_NICKSTYLE) {
     result += "\n";
   }
   return result;
-  function toTimestamp(seconds) {
-    const date = new Date(seconds * 1000); // to milliseconds
-    return `${pad2(date.getUTCHours())}:${pad2(date.getUTCMinutes())}:${pad2(date.getUTCSeconds())}`;
-    function pad2(s) {
-      return s.toString().padStart(2, "0");
-    }
+}
+
+function toTimestamp(seconds) {
+  const date = new Date(seconds * 1000); // to milliseconds
+  return `${pad2(date.getUTCHours())}:${pad2(date.getUTCMinutes())}:${pad2(date.getUTCSeconds())}`;
+  function pad2(s) {
+    return s.toString().padStart(2, "0");
   }
 }
 

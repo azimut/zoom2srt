@@ -52,6 +52,9 @@ body {
       }
       fieldset.offset {
         grid-area: offset;
+        select {
+          font-size: 0.8em;
+        }
       }
       div.download {
         grid-area: btn;

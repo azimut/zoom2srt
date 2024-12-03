@@ -11,23 +11,35 @@
     <script type="text/javascript">
       let rawChat = "";
       let rawMessages = [];
-      function nickStyle() {
+      function getNickStyle() {
         return document.querySelector('input[name="style"]:checked').value;
       }
-      function gatherOpts() {
+      function getDuration() {
+        return parseInt(document.getElementById("duration").value);
+      }
+      function getOffsets() {
         const pad2 = (s) => s.toString().padStart(2, "0");
-        const duration = document.getElementById("duration").value;
-        const minutes = pad2(document.getElementById("minutes").value);
-        const seconds = pad2(document.getElementById("seconds").value);
+        const divs = document.querySelectorAll("div.offset");
+        return [...divs].map((div) => {
+          const idx = div.querySelector("select").value;
+          const minutes = div.querySelector('input[name="minutes"]').value;
+          const seconds = div.querySelector('input[name="seconds"]').value;
+          return {
+            index: idx,
+            offset: `00:${pad2(minutes)}:${pad2(seconds)}`,
+          };
+        });
+      }
+      function gatherOpts() {
         return {
-          duration: parseInt(duration),
-          nickStyle: nickStyle(),
-          offset: `00:${minutes}:${seconds}`,
+          duration: getDuration(),
+          nickStyle: getNickStyle(),
+          offsets: getOffsets(),
         };
       }
       function updateMessages() {
-        let { offset, duration } = gatherOpts();
-        rawMessages = offsetIt(parseIt(rawChat, duration), offset);
+        rawMessages = parseIt(rawChat, getDuration());
+        rawMessages = offsetIt(rawMessages, getOffsets());
       }
       function updatePreview() {
         const previewSub = (sub) => sub.split("\n\n").slice(0, 2).join("\n\n");
@@ -41,7 +53,7 @@
         downloadAnchor.setAttribute(
           "href",
           "data:text/plain;charset=utf-8," +
-            encodeURIComponent(formatIt(rawMessages, nickStyle()))
+            encodeURIComponent(formatIt(rawMessages, getNickStyle()))
         );
         downloadAnchor.style.display = "none";
         document.body.appendChild(downloadAnchor);
@@ -68,6 +80,48 @@
           false
         );
         if (chatfile) reader.readAsText(chatfile);
+      }
+      function getStartOffset() {
+        const msgIds = document.querySelectorAll("div.offset select");
+        return msgIds.length === 0
+          ? 0
+          : parseInt(msgIds[msgIds.length - 1].value) + 1;
+      }
+      function addOffset() {
+        // TODO: state can get weird...if you re-edit a row below...bleh
+        const startOffset = getStartOffset();
+        console.log(startOffset);
+        const options = rawMessages
+          .slice(startOffset)
+          .map(({ startTime, author, msg }, idx) => {
+            return `<option value="${startOffset + idx}">
+               ${toTimestamp(startTime)} ${(author + " " + msg).substr(0, 30)}...
+             </option>`;
+          });
+        let newDiv = document.createElement("div");
+        newDiv.setAttribute("class", "offset");
+        newDiv.innerHTML = `
+          <select>${options.join("\n")}</select>
+          <input
+                type="number"
+                name="minutes"
+                min="0"
+                max="59"
+                value="0"
+                onchange="updateMessages()"
+          />
+          <label for="minutes">minutes</label>
+          <input
+                type="number"
+                name="seconds"
+                min="0"
+                max="59"
+                value="0"
+                onchange="updateMessages()"
+          />
+          <label for="seconds">seconds</label>`;
+        const offsetsDiv = document.getElementById("offsets");
+        offsetsDiv.appendChild(newDiv);
       }
     </script>
     <meta name="title" content="zoom2srt" />
@@ -158,26 +212,8 @@
           >
             Start time offset
           </legend>
-          <input
-            type="number"
-            name="minutes"
-            id="minutes"
-            min="0"
-            max="59"
-            value="0"
-            onchange="updateMessages()"
-          />
-          <label for="minutes">minutes</label>
-          <input
-            type="number"
-            name="seconds"
-            id="seconds"
-            min="0"
-            max="59"
-            value="0"
-            onchange="updateMessages()"
-          />
-          <label for="seconds">seconds</label>
+          <div id="offsets"></div>
+          <button onclick="addOffset()">+</button>
         </fieldset>
         <div class="download">
           <button onclick="clickDownload()">Download!</button>
