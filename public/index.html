@@ -74,8 +74,12 @@
           "load",
           () => {
             rawChat = reader.result;
-            showSettings();
             updateMessages();
+            if (rawMessages.length > 0) {
+              showSettings();
+            } else {
+              alert("invalid zoom chat .TXT file"); // FIXME
+            }
             /* updatePreview(); */
             clearInputFile();
           },
