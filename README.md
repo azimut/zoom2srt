@@ -2,7 +2,7 @@
 
 Online (no backend!) tool to convert Zoom exported chats (in .txt) to srt subtitles that you can add to your favorite video player.
 
-![screenshot of settings page](assets/Screenshot 2024-12-03 at 15-20-00.png)
+![screenshot of settings page](assets/Screenshot%202024-12-03%20at%2015-20-00.png)
 
 ## References
 
