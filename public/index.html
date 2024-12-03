@@ -65,6 +65,7 @@
         function showSettings() {
           document.getElementById("settings").style.display = null;
           document.getElementById("upload").style.display = "none";
+          document.getElementById("none").focus();
         }
         function clearInputFile() {
           document.getElementById("chatfile").value = null;
@@ -123,6 +124,7 @@
         const offsetsDiv = document.getElementById("offsets");
         offsetsDiv.style.display = null;
         offsetsDiv.appendChild(newDiv);
+        newDiv.querySelector("select").focus();
       }
     </script>
     <meta name="title" content="zoom2srt" />
