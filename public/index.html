@@ -20,15 +20,16 @@
       function getOffsets() {
         const pad2 = (s) => s.toString().padStart(2, "0");
         const divs = document.querySelectorAll("div.offset");
-        return [...divs].map((div) => {
-          const idx = div.querySelector("select").value;
+        const result = [...divs].map((div) => {
+          const timestamp = parseInt(div.querySelector("select").value);
           const minutes = div.querySelector('input[name="minutes"]').value;
           const seconds = div.querySelector('input[name="seconds"]').value;
           return {
-            index: idx,
-            offset: `00:${pad2(minutes)}:${pad2(seconds)}`,
+            timestamp: timestamp,
+            offsetBy: `00:${pad2(minutes)}:${pad2(seconds)}`,
           };
         });
+        return result;
       }
       function gatherOpts() {
         return {
@@ -65,8 +66,9 @@
           document.getElementById("settings").style.display = null;
           document.getElementById("upload").style.display = "none";
         }
-        const chatfileEle = document.getElementById("chatfile");
-        const [chatfile] = chatfileEle.files;
+        function clearInputFile() {
+          document.getElementById("chatfile").value = null;
+        }
         const reader = new FileReader();
         reader.addEventListener(
           "load",
@@ -75,11 +77,17 @@
             showSettings();
             updateMessages();
             /* updatePreview(); */
-            chatfileEle.value = null; // forget about filename
+            clearInputFile();
           },
           false
         );
+        const [chatfile] = document.getElementById("chatfile").files;
         if (chatfile) reader.readAsText(chatfile);
+      }
+      function getSubtitleBounds() {
+        const startTime = rawMessages[0].startTime;
+        const endTime = rawMessages[rawMessages.length - 1].startTime;
+        return [startTime, endTime];
       }
       function getStartOffset() {
         const msgIds = document.querySelectorAll("div.offset select");
@@ -88,37 +96,25 @@
           : parseInt(msgIds[msgIds.length - 1].value) + 1;
       }
       function addOffset() {
-        // TODO: state can get weird...if you re-edit a row below...bleh
-        const startOffset = getStartOffset();
-        console.log(startOffset);
-        const options = rawMessages
-          .slice(startOffset)
-          .map(({ startTime, author, msg }, idx) => {
-            return `<option value="${startOffset + idx}">
-               ${toTimestamp(startTime)} ${(author + " " + msg).substr(0, 30)}...
-             </option>`;
-          });
+        const [rawSubMin, subMax] = getSubtitleBounds();
+        const subMin = Math.max(rawSubMin, getStartOffset());
+        let options = [];
+        for (let seconds = subMin; seconds < subMax; seconds = seconds + 60) {
+          options.push(
+            `<option value="${seconds}">${toTimestamp(seconds)}</option>`
+          );
+        }
+        options.push(
+          `<option value="${subMax}">${toTimestamp(subMax)}</option>`
+        );
+
         let newDiv = document.createElement("div");
         newDiv.setAttribute("class", "offset");
         newDiv.innerHTML = `
           <select>${options.join("\n")}</select>
-          <input
-                type="number"
-                name="minutes"
-                min="0"
-                max="59"
-                value="0"
-                onchange="updateMessages()"
-          />
+          <input type="number" name="minutes" min="0" max="59" value="0" onchange="updateMessages()" />
           <label for="minutes">minutes</label>
-          <input
-                type="number"
-                name="seconds"
-                min="0"
-                max="59"
-                value="0"
-                onchange="updateMessages()"
-          />
+          <input type="number" name="seconds" min="0" max="59" value="0" onchange="updateMessages()" />
           <label for="seconds">seconds</label>`;
         const offsetsDiv = document.getElementById("offsets");
         offsetsDiv.appendChild(newDiv);
@@ -165,7 +161,7 @@
     <main>
       <div id="upload">
         <fieldset>
-          <legend>Select a Zoom .txt chat file to upload</legend>
+          <legend>Upload a .txt of a Zoom chat</legend>
           <input
             type="file"
             id="chatfile"

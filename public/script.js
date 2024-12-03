@@ -20,6 +20,7 @@ function parseIt(chat, duration = DEFAULT_DURATION) {
     if (emojiRegex.test(newMsg)) continue;
     let startTime = inSeconds(time);
     messages.push({
+      startTimeOrig: startTime,
       startTime: startTime,
       endTime: startTime + duration,
       author: author,
@@ -29,23 +30,23 @@ function parseIt(chat, duration = DEFAULT_DURATION) {
   return messages;
 }
 
-function offsetIt(messages, offsets = []) {
+function offsetIt(messages = [], offsets = []) {
   let newMessages = messages;
-  for (const { offset, index } of offsets) {
-    newMessages = offsetOnce(newMessages, offset, index);
+  for (const { timestamp, offsetBy } of offsets) {
+    newMessages = offsetOnce(newMessages, timestamp, offsetBy);
   }
   return newMessages;
 }
 
-function offsetOnce(messages, rawOffset, bottomIdx) {
+function offsetOnce(messages, timestamp, rawOffset) {
   let result = [];
-  let idx = 0;
   const offset = inSeconds(rawOffset);
-  for (const { startTime, endTime, author, msg } of messages) {
-    let effectiveOffset = bottomIdx > idx++ ? 0 : offset; // offset ONLY requested ones
-    let finalStartTime = startTime - effectiveOffset;
+  for (const { startTime, startTimeOrig, endTime, author, msg } of messages) {
+    const effectiveOffset = startTimeOrig < timestamp ? 0 : offset; // offset ONLY requested ones
+    const finalStartTime = startTime - effectiveOffset;
     if (finalStartTime < 0) continue;
     result.push({
+      startTimeOrig: startTimeOrig,
       startTime: finalStartTime,
       endTime: endTime - effectiveOffset,
       author: author,
