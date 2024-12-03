@@ -28,11 +28,8 @@ body {
     }
   }
   main {
-    input[type="number"] {
-      appearance: textfield;
-      width: 1.25em;
-      font-size: 1em;
-      font-family: monospace;
+    fieldset legend {
+      font-size: 1.25em;
     }
     div#upload {
       margin-bottom: 4.5em; /* hacky! */
@@ -54,6 +51,7 @@ body {
         grid-area: offset;
         select {
           font-size: 0.8em;
+          text-align: center;
         }
       }
       div.download {
@@ -84,6 +82,14 @@ body {
       }
       label[for="colors"]:nth-of-type(3) {
         font-weight: bold;
+      }
+      input[type="number"] {
+        text-align: center;
+        appearance: textfield; /* remove arrows */
+        width: 1.25em;
+        font-size: 0.85em;
+        padding: 0;
+        font-family: monospace;
       }
     }
   }
