@@ -70,6 +70,10 @@ body {
           color: var(--background);
           background: var(--foreground);
         }
+        button:hover {
+          color: var(--foreground);
+          background: var(--background);
+        }
       }
       div.download {
         grid-area: btn;
