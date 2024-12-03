@@ -111,12 +111,13 @@
         let newDiv = document.createElement("div");
         newDiv.setAttribute("class", "offset");
         newDiv.innerHTML = `
-          <select>${options.join("\n")}</select>
+          at <select>${options.join("\n")}</select> was cut
           <input type="number" name="minutes" min="0" max="59" value="0" onchange="updateMessages()" />
           <label for="minutes">minutes</label>
           <input type="number" name="seconds" min="0" max="59" value="0" onchange="updateMessages()" />
           <label for="seconds">seconds</label>`;
         const offsetsDiv = document.getElementById("offsets");
+        offsetsDiv.style.display = null;
         offsetsDiv.appendChild(newDiv);
       }
     </script>
@@ -203,12 +204,10 @@
           <label for="duration">seconds </label>
         </fieldset>
         <fieldset class="offset">
-          <legend
-            title="For when some of the beginning of the video has been cut out"
-          >
-            Start time offset
+          <legend title="Based on where cuts on the video happened.">
+            Time correction
           </legend>
-          <div id="offsets"></div>
+          <div id="offsets" style="display: none"></div>
           <button onclick="addOffset()">+</button>
         </fieldset>
         <div class="download">
