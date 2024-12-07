@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -116,9 +116,9 @@
         let newDiv = document.createElement("div");
         newDiv.setAttribute("class", "offset");
         newDiv.innerHTML = `
-          at <select>${options.join("\n")}</select> was cut
+          at <select>${options.join("\n")}</select> cut
           <input type="number" name="minutes" min="0" max="59" value="0" onchange="updateMessages()" />
-          <label for="minutes">minutes</label>
+          <label for="minutes">minutes</label> and
           <input type="number" name="seconds" min="0" max="59" value="0" onchange="updateMessages()" />
           <label for="seconds">seconds</label>`;
         const offsetsDiv = document.getElementById("offsets");
@@ -222,8 +222,7 @@
       </div>
     </main>
     <footer>
-      Copyright © 2024 azimut - MIT<a
-        href="https://github.com/azimut/zoom2srt/"
+      Copyright © 2024 azimut - MIT<a href="https://github.com/azimut/zoom2srt/"
         >Source</a
       >
     </footer>
